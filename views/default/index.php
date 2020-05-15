@@ -45,13 +45,13 @@ $this->params['breadcrumbs'][] = $this->title;
     GridView::widget(
         [
             'dataProvider' => $dataProvider,
-            'filterModel' => $searchModel,
-            'columns' => [
+            'filterModel'  => $searchModel,
+            'columns'      => [
                 'id',
                 //'type',
                 [
                     'attribute' => 'section',
-                    'filter' => ArrayHelper::map(
+                    'filter'    => ArrayHelper::map(
                         Setting::find()->select('section')->distinct()->where(['<>', 'section', ''])->all(),
                         'section',
                         'section'
@@ -60,11 +60,35 @@ $this->params['breadcrumbs'][] = $this->title;
                 'key',
                 'value:ntext',
                 [
-                    'class' => '\pheme\grid\ToggleColumn',
+                    'class'     => '\pheme\grid\ToggleColumn',
                     'attribute' => 'active',
-                    'filter' => [1 => Yii::t('yii', 'Yes'), 0 => Yii::t('yii', 'No')],
+                    'filter'    => [1 => Yii::t('yii', 'Yes'), 0 => Yii::t('yii', 'No')],
                 ],
-                ['class' => 'yii\grid\ActionColumn'],
+                [
+                    'class'    => 'yii\grid\ActionColumn',
+                    'template' => '{switch} {view} {update} {delete}',
+                    'buttons'  => [
+                        'view'   => function ($url, $model) {
+                            return Html::a('<i class="fas fa-eye"></i>', $url, [
+                                'title' => 'View',
+                            ]);
+                        },
+                        'update' => function ($url, $model) {
+                            return Html::a('<i class="far fa-edit"></i>', $url, [
+                                'title' => 'Update',
+                            ]);
+                        },
+                        'delete' => function ($url, $model) {
+                            return Html::a('<i class="far fa-trash-alt"></i>', $url, [
+                                'title' => 'Delete',
+                                'data'  => [
+                                    'method'  => 'post',
+                                    'confirm' => 'Are you sure you want to delete this item?',
+                                ]
+                            ]);
+                        },
+                    ]
+                ],
             ],
         ]
     ); ?>
